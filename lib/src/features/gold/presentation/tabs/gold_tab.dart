@@ -52,40 +52,34 @@ class _GoldTabState extends State<GoldTab> {
                             currency: 'EGP',
                             goldType: 24,
                             price: goldPrices.gold24kPrice),
-                        const Divider(),
                         GoldPricesListItem(
                             currency: 'EGP',
                             goldType: 22,
                             price: goldPrices.gold22kPrice),
-                        const Divider(),
                         GoldPricesListItem(
                             currency: 'EGP',
                             goldType: 21,
                             price: goldPrices.gold21kPrice),
-                        const Divider(),
                         GoldPricesListItem(
                             currency: 'EGP',
                             goldType: 20,
                             price: goldPrices.gold20kPrice),
-                        const Divider(),
                         GoldPricesListItem(
                             currency: 'EGP',
                             goldType: 18,
                             price: goldPrices.gold18kPrice),
-                        const Divider(),
                         GoldPricesListItem(
                             currency: 'EGP',
                             goldType: 16,
                             price: goldPrices.gold16kPrice),
-                        const Divider(),
                         GoldPricesListItem(
                             currency: 'EGP',
                             goldType: 14,
                             price: goldPrices.gold14kPrice),
-                        const Divider(),
                         GoldPricesListItem(
                             currency: 'EGP',
                             goldType: 10,
+                            hasDivider: false,
                             price: goldPrices.gold10kPrice),
                       ],
                     ),
