@@ -24,8 +24,12 @@ class CurrencyExchangeRateRepoImpl implements CurrencyExchangeRateRepo {
           await currencyExchangeRateDataSource.getCurrencyExchangeRateRawData();
       return right(CurrencyExchangeRate.fromJson(response));
     } catch (error) {
-      if (error is! AppException) return left(CustomFailure());
-      return left(AppSharedUtils.getFailureBasedOnException(error));
+      return _handleError(error);
     }
+  }
+
+  Either<Failure, CurrencyExchangeRate> _handleError(Object error) {
+    if (error is! AppException) return left(CustomFailure());
+    return left(AppSharedUtils.getFailureBasedOnException(error));
   }
 }

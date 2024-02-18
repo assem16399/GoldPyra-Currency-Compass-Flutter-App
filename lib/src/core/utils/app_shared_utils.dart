@@ -8,7 +8,6 @@ abstract class AppSharedUtils {
   // Method to get a custom exception based on a DioException.
   static Exception getCustomExceptionBasedOnDioException(DioException error) {
     // Check the type of DioException and return the appropriate custom exception.
-    print(error.response);
     switch (error.type) {
       case DioExceptionType.connectionError:
         return NoInternetException();

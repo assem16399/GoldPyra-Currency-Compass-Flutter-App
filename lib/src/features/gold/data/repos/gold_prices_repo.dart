@@ -22,8 +22,12 @@ class GoldPricesRepoImpl implements GoldPricesRepo {
           await currencyExchangeRateDataSource.getGoldPricesRawData();
       return right(GoldPrices.fromJson(response));
     } catch (error) {
-      if (error is! AppException) return left(CustomFailure());
-      return left(AppSharedUtils.getFailureBasedOnException(error));
+      return _handleError(error);
     }
+  }
+
+  Either<Failure, GoldPrices> _handleError(Object error) {
+    if (error is! AppException) return left(CustomFailure());
+    return left(AppSharedUtils.getFailureBasedOnException(error));
   }
 }
