@@ -19,7 +19,7 @@ class CurrencyExchangeRateCubit extends Cubit<CurrencyExchangeRateState> {
     refreshCurrencyExchangeRate();
   }
 
-  void refreshCurrencyExchangeRate() async {
+  Future<void> refreshCurrencyExchangeRate() async {
     final either =
         await currencyExchangeRateRepo.getCurrencyExchangeRateFromDataSource();
     either.fold(

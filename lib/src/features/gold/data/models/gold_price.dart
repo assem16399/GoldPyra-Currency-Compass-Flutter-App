@@ -26,7 +26,7 @@ class GoldPrices {
   factory GoldPrices.fromJson(Map<String, dynamic> json) {
     return GoldPrices(
       baseCurrencyCode: json['currency'],
-      date: DateTime.fromMillisecondsSinceEpoch(json['open_time'] * 1000),
+      date: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] * 1000),
       gold24kPrice: json['price_gram_24k'],
       gold22kPrice: json['price_gram_22k'],
       gold21kPrice: json['price_gram_21k'],
