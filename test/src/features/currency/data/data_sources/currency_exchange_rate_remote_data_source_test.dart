@@ -34,15 +34,12 @@ void main() {
 
   void setUpMockWebServiceGetRequestFailure404() {
     when(mockWebService.getRequest(path: kEGPTOUSDExchangeRateEndpoint))
-        .thenAnswer((_) async {
-      final response = Response(
-          requestOptions: RequestOptions(path: kEGPTOUSDExchangeRateEndpoint),
-          statusCode: 404);
-      final exception = DioException(
-          requestOptions: RequestOptions(path: kEGPTOUSDExchangeRateEndpoint),
-          response: response);
-      throw exception;
-    });
+        .thenThrow(DioException(
+            requestOptions: RequestOptions(path: kEGPTOUSDExchangeRateEndpoint),
+            response: Response(
+                requestOptions:
+                    RequestOptions(path: kEGPTOUSDExchangeRateEndpoint),
+                statusCode: 404)));
   }
 
   group('getCurrencyExchangeRateRawData', () {
@@ -79,69 +76,10 @@ void main() {
       setUpMockWebServiceGetRequestFailure404();
 
       //act
-      result() => remoteDataSource.getCurrencyExchangeRateRawData();
+      final result = remoteDataSource.getCurrencyExchangeRateRawData();
 
       //assert
       expect(result, throwsA(isA<DioException>()));
     });
   });
 }
-// test('GetCurrencyExchangeRate should return currency exchange rate without any exception', () async {
-//   //arrange
-//   final currencyExchangeRate = CurrencyExchangeRateModel(
-//     baseCurrency: 'USD',
-//     date: '2022-01-01',
-//     rates: {
-//       'IDR': 14000,
-//       'EUR': 0.85,
-//       'GBP': 0.75,
-//     },
-//   );
-//
-//   final currencyExchangeRateMap = currencyExchangeRate.toMap();
-//   when(mockNetworkService.get('https://api.exchangerate-api.com/v4/latest/USD'))
-//       .thenAnswer(
-//     (_) {
-//       return Future.value(Response(
-//               requestOptions: RequestOptions(
-//                 path: 'https://api.exchangerate-api.com/v4/latest/USD',
-//               ),
-//               data: currencyExchangeRateMap,
-//               statusCode: 200)
-//           .data);
-//     },
-//   );
-//
-//   //act
-//   final result = await remoteDataSource.getCurrencyExchangeRate('USD');
-//
-//   //assert
-//   expect(result, currencyExchangeRateMap);
-// });
-//
-// test('GetCurrencyExchangeRate should throw an Exception if the status code is not 200',
-//     () async {
-//   //arrange
-//   final expectedResult = throwsA(isA<DioException>());
-//   when(mockNetworkService.get('https://api.exchangerate-api.com/v4/latest/USD'))
-//       .thenAnswer(
-//     (_) {
-//       final requestOptions = RequestOptions(
-//         path: 'https://api.exchangerate-api.com/v4/latest/USD',
-//         data: null,
-//       );
-//       final dioException = DioException(
-//           requestOptions: requestOptions,
-//           response: Response(
-//               requestOptions: requestOptions, data: {}, statusCode: 404));
-//       print(dioException.response);
-//       throw dioException;
-//     },
-//   );
-//
-//   //act
-//   final result = remoteDataSource.getCurrencyExchangeRate('USD');
-//
-//   //assert
-//   expect(result, expectedResult);
-// });
