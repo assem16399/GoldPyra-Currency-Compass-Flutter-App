@@ -7,7 +7,7 @@ part 'currency_exchange_rate_state.dart';
 
 class CurrencyExchangeRateCubit extends Cubit<CurrencyExchangeRateState> {
   CurrencyExchangeRateCubit({required this.currencyExchangeRateRepo})
-      : super(CurrencyExchangeRateInitial());
+      : super(const CurrencyExchangeRateInitial());
   final CurrencyExchangeRateRepo currencyExchangeRateRepo;
   CurrencyExchangeRate? _currencyExchangeRate;
 
@@ -15,7 +15,7 @@ class CurrencyExchangeRateCubit extends Cubit<CurrencyExchangeRateState> {
 
   void getCurrencyExchangeRate() async {
     if (_currencyExchangeRate != null) return;
-    emit(CurrencyExchangeRateLoading());
+    emit(const CurrencyExchangeRateLoading());
     refreshCurrencyExchangeRate();
   }
 

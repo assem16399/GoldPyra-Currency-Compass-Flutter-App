@@ -21,7 +21,8 @@ void main() {
   });
 
   test('initial state should be CurrencyExchangeRateInitial', () {
-    expect(currencyExchangeRateCubit.state, CurrencyExchangeRateInitial());
+    expect(
+        currencyExchangeRateCubit.state, const CurrencyExchangeRateInitial());
   });
 
   group('getCurrencyExchangeRate', () {
@@ -39,7 +40,7 @@ void main() {
           .thenAnswer((_) => Future.value(Right(tExchangeRate)));
       // assert later
       final expected = [
-        CurrencyExchangeRateLoading(),
+        const CurrencyExchangeRateLoading(),
         CurrencyExchangeRateLoaded(currencyExchangeRate: tExchangeRate)
       ];
       expectLater(currencyExchangeRateCubit.stream, emitsInOrder(expected));
@@ -56,7 +57,7 @@ void main() {
               (_) async => Left(NoInternetFailure('No Internet Connection')));
       // assert later
       final expected = [
-        CurrencyExchangeRateLoading(),
+        const CurrencyExchangeRateLoading(),
         CurrencyExchangeRateFailedToLoad(failMsg: 'No Internet Connection')
       ];
       expectLater(currencyExchangeRateCubit.stream, emitsInOrder(expected));
