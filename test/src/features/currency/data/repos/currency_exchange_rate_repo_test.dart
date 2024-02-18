@@ -61,21 +61,23 @@ void main() {
 
       // assert
       expect(result, isA<Right<Failure, CurrencyExchangeRate>>());
+      expect(result, equals(Right(tCurrencyExchangeRate)));
     });
-  });
 
-  test(
-      'should return a failure when the call to remote data source is unsuccessful',
-      () async {
-    // arrange
-    when(mockCurrencyExchangeRateRemoteDataSource
-            .getCurrencyExchangeRateRawData())
-        .thenThrow(NoInternetException());
+    test(
+        'should return a failure when the call to remote data source is unsuccessful',
+        () async {
+      // arrange
+      when(mockCurrencyExchangeRateRemoteDataSource
+              .getCurrencyExchangeRateRawData())
+          .thenThrow(NoInternetException());
 
-    // act
-    final result = await repo.getCurrencyExchangeRateFromDataSource();
+      // act
+      final result = await repo.getCurrencyExchangeRateFromDataSource();
 
-    // assert
-    expect(result, isA<Left<Failure, CurrencyExchangeRate>>());
+      // assert
+      expect(result, isA<Left<Failure, CurrencyExchangeRate>>());
+      expect(result, equals(Left(NoInternetFailure())));
+    });
   });
 }

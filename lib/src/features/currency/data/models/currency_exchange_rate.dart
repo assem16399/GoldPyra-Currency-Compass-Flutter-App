@@ -20,4 +20,23 @@ class CurrencyExchangeRate {
           json['time_last_update_unix'] * 1000),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is CurrencyExchangeRate &&
+        other.baseCurrencyCode == baseCurrencyCode &&
+        other.correspondingCurrencyCode == correspondingCurrencyCode &&
+        other.exchangeRate == exchangeRate &&
+        other.date == date;
+  }
+
+  @override
+  int get hashCode {
+    return baseCurrencyCode.hashCode ^
+        correspondingCurrencyCode.hashCode ^
+        exchangeRate.hashCode ^
+        date.hashCode;
+  }
 }

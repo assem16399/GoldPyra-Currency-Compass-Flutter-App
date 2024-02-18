@@ -4,6 +4,19 @@ abstract class Failure {
   Failure([this.error]);
 
   String get failMsg;
+
+  @override
+  String toString() => 'Failure: $failMsg';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Failure && other.error == error;
+  }
+
+  @override
+  int get hashCode => error.hashCode;
 }
 
 class NoInternetFailure extends Failure {
