@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import '../data_sources/currency_exchange_rate_data_source.dart';
+import '../data_sources/currency_exchange_rate_remote_data_source.dart';
 import '/src/core/errors/exceptions.dart';
 import '/src/core/errors/failures.dart';
 import '/src/core/utils/app_shared_utils.dart';

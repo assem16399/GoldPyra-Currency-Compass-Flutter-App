@@ -5,27 +5,27 @@ import '/src/core/utils/app_shared_utils.dart';
 // Abstract class representing a generic web service.
 abstract class WebService {
   // Method for making a GET request.
-  Future<Map<String, dynamic>> getRequest({
+  Future<dynamic> getRequest({
     required String path,
     Map<String, dynamic>? queryParameters,
   });
 
   // Method for making a POST request.
-  Future<Map<String, dynamic>> postRequest({
+  Future<dynamic> postRequest({
     required String path,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? data,
   });
 
   // Method for making a PUT request.
-  Future<Map<String, dynamic>> putRequest({
+  Future<dynamic> putRequest({
     required String path,
     Map<String, dynamic>? queryParameters,
     required Map<String, dynamic>? data,
   });
 
   // Method for making a DELETE request.
-  Future<Map<String, dynamic>> deleteRequest({
+  Future<dynamic> deleteRequest({
     required String path,
     Map<String, dynamic>? queryParameters,
   });
@@ -54,19 +54,18 @@ class WebServiceWithDioImpl implements WebService {
   }
 
   @override
-  Future<Map<String, dynamic>> getRequest(
+  Future<dynamic> getRequest(
       {required String path, Map<String, dynamic>? queryParameters}) async {
     try {
       final response = await _dio!.get(path, queryParameters: queryParameters);
       return response.data;
     } on DioException catch (error) {
-      print(error.response);
       throw AppSharedUtils.getCustomExceptionBasedOnDioException(error);
     }
   }
 
   @override
-  Future<Map<String, dynamic>> postRequest({
+  Future<dynamic> postRequest({
     required String path,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? data,
@@ -82,7 +81,7 @@ class WebServiceWithDioImpl implements WebService {
   }
 
   @override
-  Future<Map<String, dynamic>> putRequest({
+  Future<dynamic> putRequest({
     required String path,
     Map<String, dynamic>? queryParameters,
     required Map<String, dynamic>? data,
@@ -97,7 +96,7 @@ class WebServiceWithDioImpl implements WebService {
   }
 
   @override
-  Future<Map<String, dynamic>> deleteRequest(
+  Future<dynamic> deleteRequest(
       {required String path, Map<String, dynamic>? queryParameters}) async {
     try {
       final response =
