@@ -14,7 +14,6 @@ class CurrencyExchangeRateLoading extends CurrencyExchangeRateState {
 
 class CurrencyExchangeRateLoaded extends CurrencyExchangeRateState {
   CurrencyExchangeRateLoaded({required this.currencyExchangeRate});
-
   final CurrencyExchangeRate currencyExchangeRate;
 
   @override
@@ -31,9 +30,7 @@ class CurrencyExchangeRateLoaded extends CurrencyExchangeRateState {
 
 class CurrencyExchangeRateFailedToLoad extends CurrencyExchangeRateState {
   CurrencyExchangeRateFailedToLoad({required this.failMsg});
-
   final String failMsg;
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

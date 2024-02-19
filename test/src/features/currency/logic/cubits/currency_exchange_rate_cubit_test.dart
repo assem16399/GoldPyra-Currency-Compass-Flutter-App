@@ -52,13 +52,13 @@ void main() {
         'should emit [CurrencyExchangeRateLoading, CurrencyExchangeRateFailedToLoad] when getting data fails',
         () async {
       // arrange
+      const tFailMsg = 'No Internet Connection';
       when(mockCurrencyExchangeRateRepo.getCurrencyExchangeRateFromDataSource())
-          .thenAnswer(
-              (_) async => Left(NoInternetFailure('No Internet Connection')));
+          .thenAnswer((_) async => Left(NoInternetFailure(tFailMsg)));
       // assert later
       final expected = [
         const CurrencyExchangeRateLoading(),
-        CurrencyExchangeRateFailedToLoad(failMsg: 'No Internet Connection')
+        CurrencyExchangeRateFailedToLoad(failMsg: tFailMsg)
       ];
       expectLater(currencyExchangeRateCubit.stream, emitsInOrder(expected));
       // act
