@@ -1,3 +1,4 @@
+import 'package:exchange_rates/src/features/currency_convertor/logic/cubits/amount_exchange_rate_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,6 +20,8 @@ class ExchangeRates extends StatelessWidget {
             create: (context) => sl.sl<CurrencyExchangeRateCubit>()),
         BlocProvider<GoldPricesCubit>(
             create: (context) => sl.sl<GoldPricesCubit>()),
+        BlocProvider<AmountExchangeRateCubit>(
+            create: (context) => sl.sl<AmountExchangeRateCubit>()),
       ],
       child: MaterialApp(
         title: 'GoldPyra: Currency Compass',
