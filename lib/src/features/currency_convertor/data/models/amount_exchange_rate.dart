@@ -21,6 +21,18 @@ class AmountExchangeRate {
     return amount * currencyExchangeRate.exchangeRate;
   }
 
+  String get formattedAmount {
+    return amount.toStringAsFixed(2);
+  }
+
+  String get formattedAmountInBaseCurrency {
+    return amountInBaseCurrency.toStringAsFixed(2);
+  }
+
+  String get formattedAmountInTargetCurrency {
+    return amountInTargetCurrency.toStringAsFixed(2);
+  }
+
   double get exchangeRateInBaseCurrency {
     return currencyExchangeRate.exchangeRate;
   }

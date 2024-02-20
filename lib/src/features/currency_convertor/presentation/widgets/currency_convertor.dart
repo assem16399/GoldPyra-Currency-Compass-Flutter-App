@@ -21,7 +21,6 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
   late final TextEditingController _correspondingAmountTextController;
   late AmountExchangeRate _amountExchangeRate;
 
-  final fractionDigits = 2;
   String getCurrencySymbol({required String currencyCode}) {
     final format = NumberFormat.simpleCurrency(
         locale: Platform.localeName, name: currencyCode);
@@ -32,11 +31,12 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
   void initState() {
     super.initState();
     _amountExchangeRate = widget.amountExchangeRate;
-    _baseAmountTextController = TextEditingController(
-        text: _amountExchangeRate.amount.toStringAsFixed(fractionDigits));
+
+    _baseAmountTextController =
+        TextEditingController(text: _amountExchangeRate.formattedAmount);
+
     _correspondingAmountTextController = TextEditingController(
-        text: _amountExchangeRate.amountInBaseCurrency
-            .toStringAsFixed(fractionDigits));
+        text: _amountExchangeRate.formattedAmountInBaseCurrency);
   }
 
   void _swapControllersValues() {
@@ -58,9 +58,14 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
         amount: double.parse(_baseAmountTextController.text));
   }
 
-  void _handleEmptyBaseAmount() {
+  void _resetControllersToZero() {
     _baseAmountTextController.text = '0.00';
     _correspondingAmountTextController.text = '0.00';
+  }
+
+  void _handleEmptyBaseAmount() {
+    _resetControllersToZero();
+
     _amountExchangeRate = _amountExchangeRate.copyWith(
         amount: double.parse(_baseAmountTextController.text));
 
@@ -78,8 +83,7 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
         .updateAmountExchangeRate(_amountExchangeRate);
 
     _correspondingAmountTextController.text =
-        (_amountExchangeRate.amountInBaseCurrency)
-            .toStringAsFixed(fractionDigits);
+        _amountExchangeRate.formattedAmountInBaseCurrency;
   }
 
   @override
