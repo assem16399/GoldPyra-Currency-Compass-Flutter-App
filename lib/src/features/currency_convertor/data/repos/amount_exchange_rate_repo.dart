@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:exchange_rates/src/core/errors/exceptions.dart';
 import 'package:exchange_rates/src/core/errors/failures.dart';
 import 'package:exchange_rates/src/features/currency_convertor/data/models/amount_exchange_rate.dart';
 
@@ -32,12 +31,7 @@ class AmountExchangeRateRepoImpl implements AmountExchangeRateRepo {
       return Right(AmountExchangeRate.fromJson(pairExchangeRateRawData,
           amount: amountExchangeRate.amount));
     } catch (error) {
-      return _handleError(error);
+      return left(AppSharedUtils.handleError(error));
     }
-  }
-
-  Either<Failure, AmountExchangeRate> _handleError(Object error) {
-    if (error is! AppException) return left(CustomFailure());
-    return left(AppSharedUtils.getFailureBasedOnException(error));
   }
 }

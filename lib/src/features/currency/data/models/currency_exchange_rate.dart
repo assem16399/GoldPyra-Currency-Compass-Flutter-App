@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class CurrencyExchangeRate {
   final String baseCurrencyCode;
   final String correspondingCurrencyCode;
@@ -39,6 +41,19 @@ class CurrencyExchangeRate {
     );
   }
 
+  factory CurrencyExchangeRate.fromHistoricalRequestJson(
+      Map<String, dynamic> json) {
+    final baseCurrencyCode = json['base_code'];
+    final targetCurrencyCode = baseCurrencyCode == 'EGP' ? 'USD' : 'EGP';
+    final rates = json['conversion_rates'] as Map<String, dynamic>;
+    return CurrencyExchangeRate(
+      baseCurrencyCode: baseCurrencyCode,
+      correspondingCurrencyCode: targetCurrencyCode,
+      exchangeRate: rates[targetCurrencyCode],
+      date: DateTime(json['year'], json['month'], json['day']),
+    );
+  }
+
   CurrencyExchangeRate copyWith({
     String? baseCurrencyCode,
     String? correspondingCurrencyCode,
@@ -50,6 +65,14 @@ class CurrencyExchangeRate {
       exchangeRate: exchangeRate,
       date: date,
     );
+  }
+
+  String get baseCountryCode {
+    return baseCurrencyCode == 'EGP' ? 'EG' : 'US';
+  }
+
+  String get correspondingCountryCode {
+    return correspondingCurrencyCode == 'USD' ? 'US' : 'EG';
   }
 
   @override
@@ -70,4 +93,32 @@ class CurrencyExchangeRate {
         exchangeRate.hashCode ^
         date.hashCode;
   }
+}
+
+class CurrencyExchangeRates {
+  final List<CurrencyExchangeRate> currencyExchangeRates;
+
+  CurrencyExchangeRates({required this.currencyExchangeRates});
+
+  factory CurrencyExchangeRates.empty() {
+    return CurrencyExchangeRates(currencyExchangeRates: []);
+  }
+
+  factory CurrencyExchangeRates.fromResponses(
+      List<Map<String, dynamic>> responses) {
+    final exchangeRates =
+        responses.map((e) => CurrencyExchangeRate.fromJson(e)).toList();
+    return CurrencyExchangeRates(currencyExchangeRates: exchangeRates);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is CurrencyExchangeRates &&
+        listEquals(other.currencyExchangeRates, currencyExchangeRates);
+  }
+
+  @override
+  int get hashCode => currencyExchangeRates.hashCode;
 }

@@ -29,7 +29,7 @@ class AmountExchangeRateCubit extends Cubit<AmountExchangeRateState> {
   }
 
   void updateAmountExchangeRateOnline(AmountExchangeRate amountExchangeRate) {
-    _amountExchangeRate = amountExchangeRate;
+    updateAmountExchangeRate(amountExchangeRate);
     getPairExchangeRate();
   }
 

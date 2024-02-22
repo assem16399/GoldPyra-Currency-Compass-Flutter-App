@@ -1,12 +1,11 @@
-import 'dart:io';
-
-import 'package:exchange_rates/src/features/currency_convertor/data/models/amount_exchange_rate.dart';
-import 'package:exchange_rates/src/features/currency_convertor/logic/cubits/amount_exchange_rate_cubit.dart';
+import 'package:exchange_rates/src/core/utils/app_shared_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+
+import '/src/features/currency_convertor/data/models/amount_exchange_rate.dart';
+import '/src/features/currency_convertor/logic/cubits/amount_exchange_rate_cubit.dart';
 
 class CurrencyConvertor extends StatefulWidget {
   const CurrencyConvertor({super.key, required this.amountExchangeRate});
@@ -20,12 +19,6 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
   late final TextEditingController _baseAmountTextController;
   late final TextEditingController _correspondingAmountTextController;
   late AmountExchangeRate _amountExchangeRate;
-
-  String getCurrencySymbol({required String currencyCode}) {
-    final format = NumberFormat.simpleCurrency(
-        locale: Platform.localeName, name: currencyCode);
-    return format.currencySymbol;
-  }
 
   @override
   void initState() {
@@ -46,6 +39,7 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
   }
 
   void _updateAmountExchangeRateAfterSwapping() {
+    _swapControllersValues();
     final currencyExchangeRateAfterSwapping =
         _amountExchangeRate.currencyExchangeRate.copyWith(
       baseCurrencyCode:
@@ -55,19 +49,18 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
     );
     _amountExchangeRate = _amountExchangeRate.copyWith(
         currencyExchangeRate: currencyExchangeRateAfterSwapping,
-        amount: double.parse(_baseAmountTextController.text));
+        amount: double.tryParse(_baseAmountTextController.text) ?? 0);
   }
 
   void _resetControllersToZero() {
-    _baseAmountTextController.text = '0.00';
-    _correspondingAmountTextController.text = '0.00';
+    _baseAmountTextController.text = '';
+    _correspondingAmountTextController.text = '';
   }
 
   void _handleEmptyBaseAmount() {
     _resetControllersToZero();
 
-    _amountExchangeRate = _amountExchangeRate.copyWith(
-        amount: double.parse(_baseAmountTextController.text));
+    _amountExchangeRate = _amountExchangeRate.copyWith(amount: 0);
 
     context
         .read<AmountExchangeRateCubit>()
@@ -78,12 +71,12 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
     _amountExchangeRate = _amountExchangeRate.copyWith(
         amount: double.parse(_baseAmountTextController.text));
 
+    _correspondingAmountTextController.text =
+        _amountExchangeRate.formattedAmountInBaseCurrency;
+
     context
         .read<AmountExchangeRateCubit>()
         .updateAmountExchangeRate(_amountExchangeRate);
-
-    _correspondingAmountTextController.text =
-        _amountExchangeRate.formattedAmountInBaseCurrency;
   }
 
   @override
@@ -101,7 +94,7 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,99}'))
             ],
             decoration: InputDecoration(
-              suffix: Text(getCurrencySymbol(
+              suffix: Text(AppSharedUtils.getCurrencySymbol(
                   currencyCode: currencyExchangeRate.baseCurrencyCode)),
             ),
             onChanged: (value) {
@@ -116,7 +109,6 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
         ),
         IconButton(
             onPressed: () {
-              _swapControllersValues();
               _updateAmountExchangeRateAfterSwapping();
               context
                   .read<AmountExchangeRateCubit>()
@@ -129,7 +121,7 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
               controller: _correspondingAmountTextController,
               readOnly: true,
               decoration: InputDecoration(
-                suffix: Text(getCurrencySymbol(
+                suffix: Text(AppSharedUtils.getCurrencySymbol(
                     currencyCode:
                         currencyExchangeRate.correspondingCurrencyCode)),
               )),

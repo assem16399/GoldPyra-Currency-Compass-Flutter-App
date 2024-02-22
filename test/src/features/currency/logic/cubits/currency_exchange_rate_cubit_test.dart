@@ -26,22 +26,36 @@ void main() {
   });
 
   group('getCurrencyExchangeRate', () {
-    final tExchangeRate = CurrencyExchangeRate(
+    final tEgpUsdExchangeRate = CurrencyExchangeRate(
       baseCurrencyCode: 'EGP',
       correspondingCurrencyCode: 'USD',
       exchangeRate: 0.03236656,
       date: DateTime.fromMillisecondsSinceEpoch(1585267200 * 1000),
     );
+
+    final tUsdEgpExchangeRate = CurrencyExchangeRate(
+      baseCurrencyCode: 'USD',
+      correspondingCurrencyCode: 'EGP',
+      exchangeRate: 30.875,
+      date: DateTime.fromMillisecondsSinceEpoch(1585267200 * 1000),
+    );
+
+    final tCurrencyExchangeRates = CurrencyExchangeRates(
+      currencyExchangeRates: [tEgpUsdExchangeRate, tUsdEgpExchangeRate],
+    );
+
     test(
         'should emit [CurrencyExchangeRateLoading, CurrencyExchangeRateLoaded] when data is gotten successfully',
         () async {
       // arrange
-      when(mockCurrencyExchangeRateRepo.getCurrencyExchangeRateFromDataSource())
-          .thenAnswer((_) => Future.value(Right(tExchangeRate)));
+      when(mockCurrencyExchangeRateRepo
+              .getCurrencyExchangeRatesFromDataSource())
+          .thenAnswer((_) => Future.value(Right(tCurrencyExchangeRates)));
       // assert later
       final expected = [
         const CurrencyExchangeRateLoading(),
-        CurrencyExchangeRateLoaded(currencyExchangeRate: tExchangeRate)
+        CurrencyExchangeRateLoaded(
+            currencyExchangeRates: tCurrencyExchangeRates)
       ];
       expectLater(currencyExchangeRateCubit.stream, emitsInOrder(expected));
       // act
@@ -53,7 +67,8 @@ void main() {
         () async {
       // arrange
       const tFailMsg = 'No Internet Connection';
-      when(mockCurrencyExchangeRateRepo.getCurrencyExchangeRateFromDataSource())
+      when(mockCurrencyExchangeRateRepo
+              .getCurrencyExchangeRatesFromDataSource())
           .thenAnswer((_) async => Left(NoInternetFailure(tFailMsg)));
       // assert later
       final expected = [
@@ -67,21 +82,36 @@ void main() {
   });
 
   group('refreshCurrencyExchangeRate', () {
-    final tExchangeRate = CurrencyExchangeRate(
+    final tEgpUsdExchangeRate = CurrencyExchangeRate(
       baseCurrencyCode: 'EGP',
       correspondingCurrencyCode: 'USD',
       exchangeRate: 0.03236656,
       date: DateTime.fromMillisecondsSinceEpoch(1585267200 * 1000),
     );
+
+    final tUsdEgpExchangeRate = CurrencyExchangeRate(
+      baseCurrencyCode: 'USD',
+      correspondingCurrencyCode: 'EGP',
+      exchangeRate: 30.875,
+      date: DateTime.fromMillisecondsSinceEpoch(1585267200 * 1000),
+    );
+
+    final tCurrencyExchangeRates = CurrencyExchangeRates(
+      currencyExchangeRates: [tEgpUsdExchangeRate, tUsdEgpExchangeRate],
+    );
+
+    const tFailMsg = 'No Internet Connection';
     test(
         'should emit [CurrencyExchangeRateLoaded] when data is gotten successfully',
         () async {
       // arrange
-      when(mockCurrencyExchangeRateRepo.getCurrencyExchangeRateFromDataSource())
-          .thenAnswer((_) => Future.value(Right(tExchangeRate)));
+      when(mockCurrencyExchangeRateRepo
+              .getCurrencyExchangeRatesFromDataSource())
+          .thenAnswer((_) => Future.value(Right(tCurrencyExchangeRates)));
       // assert later
       final expected = [
-        CurrencyExchangeRateLoaded(currencyExchangeRate: tExchangeRate)
+        CurrencyExchangeRateLoaded(
+            currencyExchangeRates: tCurrencyExchangeRates)
       ];
       expectLater(currencyExchangeRateCubit.stream, emitsInOrder(expected));
       // act
@@ -92,13 +122,11 @@ void main() {
         'should emit [CurrencyExchangeRateFailedToLoad] when getting data fails',
         () async {
       // arrange
-      when(mockCurrencyExchangeRateRepo.getCurrencyExchangeRateFromDataSource())
-          .thenAnswer(
-              (_) async => Left(NoInternetFailure('No Internet Connection')));
+      when(mockCurrencyExchangeRateRepo
+              .getCurrencyExchangeRatesFromDataSource())
+          .thenAnswer((_) async => Left(NoInternetFailure(tFailMsg)));
       // assert later
-      final expected = [
-        CurrencyExchangeRateFailedToLoad(failMsg: 'No Internet Connection')
-      ];
+      final expected = [CurrencyExchangeRateFailedToLoad(failMsg: tFailMsg)];
       expectLater(currencyExchangeRateCubit.stream, emitsInOrder(expected));
       // act
       currencyExchangeRateCubit.refreshCurrencyExchangeRate();

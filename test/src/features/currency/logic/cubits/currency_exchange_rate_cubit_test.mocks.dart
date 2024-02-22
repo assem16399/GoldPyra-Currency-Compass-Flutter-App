@@ -46,20 +46,20 @@ class MockCurrencyExchangeRateRepo extends _i1.Mock
   }
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, _i6.CurrencyExchangeRate>>
-      getCurrencyExchangeRateFromDataSource() => (super.noSuchMethod(
+  _i4.Future<_i2.Either<_i5.Failure, _i6.CurrencyExchangeRates>>
+      getCurrencyExchangeRatesFromDataSource() => (super.noSuchMethod(
             Invocation.method(
-              #getCurrencyExchangeRateFromDataSource,
+              #getCurrencyExchangeRatesFromDataSource,
               [],
             ),
             returnValue: _i4.Future<
-                    _i2.Either<_i5.Failure, _i6.CurrencyExchangeRate>>.value(
-                _FakeEither_0<_i5.Failure, _i6.CurrencyExchangeRate>(
+                    _i2.Either<_i5.Failure, _i6.CurrencyExchangeRates>>.value(
+                _FakeEither_0<_i5.Failure, _i6.CurrencyExchangeRates>(
               this,
               Invocation.method(
-                #getCurrencyExchangeRateFromDataSource,
+                #getCurrencyExchangeRatesFromDataSource,
                 [],
               ),
             )),
-          ) as _i4.Future<_i2.Either<_i5.Failure, _i6.CurrencyExchangeRate>>);
+          ) as _i4.Future<_i2.Either<_i5.Failure, _i6.CurrencyExchangeRates>>);
 }

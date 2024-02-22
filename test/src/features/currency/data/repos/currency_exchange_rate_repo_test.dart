@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:exchange_rates/src/core/errors/exceptions.dart';
 import 'package:exchange_rates/src/core/errors/failures.dart';
 import 'package:exchange_rates/src/features/currency/data/data_sources/currency_exchange_rate_remote_data_source.dart';
 import 'package:exchange_rates/src/features/currency/data/models/currency_exchange_rate.dart';
@@ -27,57 +26,131 @@ void main() {
   });
 
   group('getCurrencyExchangeRateFromDataSource', () {
-    final tCurrencyExchangeRateRawData =
-        jsonDecode(fixture('currency_exchange_rate.json'));
-    final tCurrencyExchangeRate = CurrencyExchangeRate(
+    final tEGPUSDCurrencyExchangeRateRawData =
+        jsonDecode(fixture('egp_usd_currency_exchange_rate.json'));
+
+    final tUSDEGPCurrencyExchangeRateRawData =
+        jsonDecode(fixture('usd_egp_currency_exchange_rate.json'));
+
+    final tEgpUsdCurrencyExchangeRate = CurrencyExchangeRate(
       baseCurrencyCode: 'EGP',
       correspondingCurrencyCode: 'USD',
       exchangeRate: 0.03236656,
       date: DateTime.fromMillisecondsSinceEpoch(1585267200 * 1000),
     );
 
-    test('Should call getCurrencyExchangeRate from data source', () {
+    final tUsdEgpExchangeRate = CurrencyExchangeRate(
+      baseCurrencyCode: 'USD',
+      correspondingCurrencyCode: 'EGP',
+      exchangeRate: 30.875,
+      date: DateTime.fromMillisecondsSinceEpoch(1585267200 * 1000),
+    );
+
+    final tCurrencyExchangeRates = CurrencyExchangeRates(
+      currencyExchangeRates: [tEgpUsdCurrencyExchangeRate, tUsdEgpExchangeRate],
+    );
+
+    const tEGPCurrency = 'EGP';
+    const tUSDCurrency = 'USD';
+
+    test('Should call getCurrencyExchangeRate from data source', () async {
       // arrange
       when(mockCurrencyExchangeRateRemoteDataSource
-              .getCurrencyExchangeRateRawData())
-          .thenAnswer((_) async => tCurrencyExchangeRateRawData);
+              .getCurrencyExchangeRateRawData(
+                  baseCurrency: tEGPCurrency, targetCurrency: tUSDCurrency))
+          .thenAnswer((_) async => tEGPUSDCurrencyExchangeRateRawData);
+
+      when(mockCurrencyExchangeRateRemoteDataSource
+              .getCurrencyExchangeRateRawData(
+                  baseCurrency: tUSDCurrency, targetCurrency: tEGPCurrency))
+          .thenAnswer((_) async => tUSDEGPCurrencyExchangeRateRawData);
+
       // act
-      repo.getCurrencyExchangeRateFromDataSource();
+      final result = await repo.getCurrencyExchangeRatesFromDataSource();
       // assert
-      verify(mockCurrencyExchangeRateRemoteDataSource
-          .getCurrencyExchangeRateRawData());
+
+      verifyInOrder([
+        mockCurrencyExchangeRateRemoteDataSource.getCurrencyExchangeRateRawData(
+            baseCurrency: tEGPCurrency, targetCurrency: tUSDCurrency),
+        mockCurrencyExchangeRateRemoteDataSource.getCurrencyExchangeRateRawData(
+            baseCurrency: tUSDCurrency, targetCurrency: tEGPCurrency)
+      ]);
+
+      expect(result.isRight(), true);
+      expect(result.getOrElse(() => throw Exception()),
+          equals(tCurrencyExchangeRates));
     });
 
     test(
-        'should return CurrencyExchangeRate when the call to remote data source is successful',
+        'should return a failure when the call to remote data source returns response with error',
         () async {
-      // arrange
+      //arrange
+      // Prepare error response data
+      final errorResponseData = [
+        {'result': 'error'},
+        {'result': 'success', 'exchange_rate': 0.5}
+      ];
+
+      // Stub the method calls
       when(mockCurrencyExchangeRateRemoteDataSource
-              .getCurrencyExchangeRateRawData())
-          .thenAnswer((_) async => tCurrencyExchangeRateRawData);
+              .getCurrencyExchangeRateRawData(
+                  baseCurrency: tEGPCurrency, targetCurrency: tUSDCurrency))
+          .thenAnswer((_) async => errorResponseData[0]);
+      when(mockCurrencyExchangeRateRemoteDataSource
+              .getCurrencyExchangeRateRawData(
+                  baseCurrency: tUSDCurrency, targetCurrency: tEGPCurrency))
+          .thenAnswer((_) async => errorResponseData[1]);
 
-      // act
-      final result = await repo.getCurrencyExchangeRateFromDataSource();
+      //act
+      // Call the method
+      final result = await repo.getCurrencyExchangeRatesFromDataSource();
 
-      // assert
-      expect(result, isA<Right<Failure, CurrencyExchangeRate>>());
-      expect(result, equals(Right(tCurrencyExchangeRate)));
+      //assert
+      // Verify the method calls
+      verify(mockCurrencyExchangeRateRemoteDataSource
+          .getCurrencyExchangeRateRawData(
+              baseCurrency: tEGPCurrency, targetCurrency: tUSDCurrency));
+      verify(mockCurrencyExchangeRateRemoteDataSource
+          .getCurrencyExchangeRateRawData(
+              baseCurrency: tUSDCurrency, targetCurrency: tEGPCurrency));
+
+      // Check the result
+      expect(result.isLeft(), true);
+      expect(result, equals(left(ServerFailure())));
     });
 
     test(
         'should return a failure when the call to remote data source is unsuccessful',
         () async {
-      // arrange
+      //arrange
+      // Stub the method calls to throw an exception
       when(mockCurrencyExchangeRateRemoteDataSource
-              .getCurrencyExchangeRateRawData())
-          .thenThrow(NoInternetException());
+              .getCurrencyExchangeRateRawData(
+                  baseCurrency: tEGPCurrency, targetCurrency: tUSDCurrency))
+          .thenThrow(Exception('Test Exception'));
 
-      // act
-      final result = await repo.getCurrencyExchangeRateFromDataSource();
+      when(mockCurrencyExchangeRateRemoteDataSource
+              .getCurrencyExchangeRateRawData(
+                  baseCurrency: tUSDCurrency, targetCurrency: tEGPCurrency))
+          .thenAnswer((_) async => tUSDEGPCurrencyExchangeRateRawData);
 
-      // assert
-      expect(result, isA<Left<Failure, CurrencyExchangeRate>>());
-      expect(result, equals(Left(NoInternetFailure())));
+      //act
+      // Call the method
+      final result = await repo.getCurrencyExchangeRatesFromDataSource();
+
+      //assert
+      // Verify the method calls
+      verify(mockCurrencyExchangeRateRemoteDataSource
+          .getCurrencyExchangeRateRawData(
+              baseCurrency: tEGPCurrency, targetCurrency: tUSDCurrency));
+
+      verifyNever(mockCurrencyExchangeRateRemoteDataSource
+          .getCurrencyExchangeRateRawData(
+              baseCurrency: tUSDCurrency, targetCurrency: tEGPCurrency));
+
+      // Check the result
+      expect(result.isLeft(), true);
+      expect(result, equals(left(CustomFailure())));
     });
   });
 }

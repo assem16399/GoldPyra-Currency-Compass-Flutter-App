@@ -32,11 +32,18 @@ class MockCurrencyExchangeRateRemoteDataSource extends _i1.Mock
   }
 
   @override
-  _i3.Future<Map<String, dynamic>> getCurrencyExchangeRateRawData() =>
+  _i3.Future<Map<String, dynamic>> getCurrencyExchangeRateRawData({
+    required String? baseCurrency,
+    required String? targetCurrency,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #getCurrencyExchangeRateRawData,
           [],
+          {
+            #baseCurrency: baseCurrency,
+            #targetCurrency: targetCurrency,
+          },
         ),
         returnValue:
             _i3.Future<Map<String, dynamic>>.value(<String, dynamic>{}),

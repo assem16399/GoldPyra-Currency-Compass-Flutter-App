@@ -19,7 +19,7 @@ class _AppLayoutState extends State<AppLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('GoldPyra: Currency Compass')),
-      body: _tabs[_currentIndex],
+      body: SafeArea(child: _tabs[_currentIndex]),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamed(CurrencyConvertorScreen.routeName);

@@ -23,38 +23,48 @@ void main() {
   });
 
   void setUpMockWebServiceGetRequestSuccess200() {
-    when(mockWebService.getRequest(path: kEGPTOUSDExchangeRateEndpoint))
+    const tBaseCurrency = 'EGP';
+    const tTargetCurrency = 'USD';
+    when(mockWebService.getRequest(
+            path: '$kPairExchangeRateEndpoint/$tBaseCurrency/$tTargetCurrency'))
         .thenAnswer((_) async => Response(
-                requestOptions:
-                    RequestOptions(path: kEGPTOUSDExchangeRateEndpoint),
+                requestOptions: RequestOptions(path: kPairExchangeRateEndpoint),
                 statusCode: 200,
-                data: jsonDecode(fixture('currency_exchange_rate.json')))
+                data:
+                    jsonDecode(fixture('egp_usd_currency_exchange_rate.json')))
             .data);
   }
 
   void setUpMockWebServiceGetRequestFailure404() {
-    when(mockWebService.getRequest(path: kEGPTOUSDExchangeRateEndpoint))
+    const tBaseCurrency = 'EGP';
+    const tTargetCurrency = 'USD';
+    when(mockWebService.getRequest(
+            path: '$kPairExchangeRateEndpoint/$tBaseCurrency/$tTargetCurrency'))
         .thenThrow(DioException(
-            requestOptions: RequestOptions(path: kEGPTOUSDExchangeRateEndpoint),
+            requestOptions: RequestOptions(path: kPairExchangeRateEndpoint),
             response: Response(
-                requestOptions:
-                    RequestOptions(path: kEGPTOUSDExchangeRateEndpoint),
+                requestOptions: RequestOptions(path: kPairExchangeRateEndpoint),
                 statusCode: 404)));
   }
 
   group('getCurrencyExchangeRateRawData', () {
     final tCurrencyExchangeRateRawData =
-        jsonDecode(fixture('currency_exchange_rate.json'));
+        jsonDecode(fixture('egp_usd_currency_exchange_rate.json'));
+
+    const tBaseCurrency = 'EGP';
+    const tTargetCurrency = 'USD';
 
     test('should perform a GET request on a URL with the endpoint', () async {
       //arrange
       setUpMockWebServiceGetRequestSuccess200();
 
       //act
-      await remoteDataSource.getCurrencyExchangeRateRawData();
+      await remoteDataSource.getCurrencyExchangeRateRawData(
+          baseCurrency: tBaseCurrency, targetCurrency: tTargetCurrency);
 
       //assert
-      verify(mockWebService.getRequest(path: kEGPTOUSDExchangeRateEndpoint));
+      verify(mockWebService.getRequest(
+          path: '$kPairExchangeRateEndpoint/$tBaseCurrency/$tTargetCurrency'));
     });
 
     test(
@@ -64,7 +74,8 @@ void main() {
       setUpMockWebServiceGetRequestSuccess200();
 
       //act
-      final result = await remoteDataSource.getCurrencyExchangeRateRawData();
+      final result = await remoteDataSource.getCurrencyExchangeRateRawData(
+          baseCurrency: tBaseCurrency, targetCurrency: tTargetCurrency);
 
       //assert
       expect(result, tCurrencyExchangeRateRawData);
@@ -76,7 +87,8 @@ void main() {
       setUpMockWebServiceGetRequestFailure404();
 
       //act
-      final result = remoteDataSource.getCurrencyExchangeRateRawData();
+      final result = remoteDataSource.getCurrencyExchangeRateRawData(
+          baseCurrency: tBaseCurrency, targetCurrency: tTargetCurrency);
 
       //assert
       expect(result, throwsA(isA<DioException>()));

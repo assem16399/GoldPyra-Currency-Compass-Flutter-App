@@ -10,6 +10,7 @@ class ExchangeRatesListItem extends StatelessWidget {
     required this.correspondingCurrencyCode,
     required this.rate,
     required this.baseCountryCode,
+    this.onTap,
     required this.correspondingCountryCode,
   });
 
@@ -18,9 +19,11 @@ class ExchangeRatesListItem extends StatelessWidget {
   final String correspondingCurrencyCode;
   final String correspondingCountryCode;
   final double rate;
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       leading: Flags.fromString(
         [correspondingCountryCode, baseCountryCode],
         height: Sizes.p30,

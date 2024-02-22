@@ -9,26 +9,26 @@ class CurrencyExchangeRateCubit extends Cubit<CurrencyExchangeRateState> {
   CurrencyExchangeRateCubit({required this.currencyExchangeRateRepo})
       : super(const CurrencyExchangeRateInitial());
   final CurrencyExchangeRateRepo currencyExchangeRateRepo;
-  CurrencyExchangeRate? _currencyExchangeRate;
+  CurrencyExchangeRates _currencyExchangeRates = CurrencyExchangeRates.empty();
 
-  CurrencyExchangeRate get currencyExchangeRate => _currencyExchangeRate!;
+  CurrencyExchangeRates get currencyExchangeRates => _currencyExchangeRates;
 
   void getCurrencyExchangeRate() async {
-    if (_currencyExchangeRate != null) return;
+    if (_currencyExchangeRates.currencyExchangeRates.isNotEmpty) return;
     emit(const CurrencyExchangeRateLoading());
     refreshCurrencyExchangeRate();
   }
 
   Future<void> refreshCurrencyExchangeRate() async {
     final either =
-        await currencyExchangeRateRepo.getCurrencyExchangeRateFromDataSource();
+        await currencyExchangeRateRepo.getCurrencyExchangeRatesFromDataSource();
     either.fold(
         (failure) =>
             emit(CurrencyExchangeRateFailedToLoad(failMsg: failure.failMsg)),
-        (currencyExchangeRate) {
-      _currencyExchangeRate = currencyExchangeRate;
+        (currencyExchangeRates) {
+      _currencyExchangeRates = currencyExchangeRates;
       emit(CurrencyExchangeRateLoaded(
-          currencyExchangeRate: _currencyExchangeRate!));
+          currencyExchangeRates: _currencyExchangeRates));
     });
   }
 }

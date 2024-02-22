@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../currency_exchange_rate_details/presentation/screens/currency_exchange_rate_details_screen.dart';
 import '../../logic/cubit/currency_exchange_rate_cubit.dart';
 import '../widgets/exchange_rates_list_item.dart';
 import '/src/core/constants/app_sizes.dart';
 import '/src/core/widgets/on_error_refresh_button.dart';
-import '/src/core/widgets/operation_headline.dart';
 
 class CurrencyTab extends StatefulWidget {
   const CurrencyTab({super.key});
@@ -41,28 +41,28 @@ class _CurrencyTabState extends State<CurrencyTab> {
                       .read<CurrencyExchangeRateCubit>()
                       .getCurrencyExchangeRate);
             }
-            final exchangeRate =
-                context.read<CurrencyExchangeRateCubit>().currencyExchangeRate;
-            return Column(
-              children: [
-                OperationHeadLine(
-                    operation: 'Exchange Rates', date: exchangeRate.date),
-                gapH16,
-                Expanded(
-                  child: ListView(
-                    children: [
-                      ExchangeRatesListItem(
-                        baseCurrencyCode: exchangeRate.baseCurrencyCode,
-                        correspondingCurrencyCode:
-                            exchangeRate.correspondingCurrencyCode,
-                        rate: exchangeRate.exchangeRate,
-                        baseCountryCode: 'EG',
-                        correspondingCountryCode: 'US',
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            final exchangeRates = context
+                .read<CurrencyExchangeRateCubit>()
+                .currencyExchangeRates
+                .currencyExchangeRates;
+            return ListView.separated(
+              separatorBuilder: (context, index) => const Divider(),
+              itemCount: 2,
+              itemBuilder: (context, index) => ExchangeRatesListItem(
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    CurrencyExchangeRateDetailsScreen.routeName,
+                    arguments: exchangeRates[index],
+                  );
+                },
+                baseCurrencyCode: exchangeRates[index].baseCurrencyCode,
+                correspondingCurrencyCode:
+                    exchangeRates[index].correspondingCurrencyCode,
+                rate: exchangeRates[index].exchangeRate,
+                baseCountryCode: exchangeRates[index].baseCountryCode,
+                correspondingCountryCode:
+                    exchangeRates[index].correspondingCountryCode,
+              ),
             );
           },
         ),

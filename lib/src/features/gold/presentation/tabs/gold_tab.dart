@@ -5,7 +5,6 @@ import '../../logic/cubits/gold_prices_cubit.dart';
 import '../widgets/gold_prices_list_item.dart';
 import '/src/core/constants/app_sizes.dart';
 import '/src/core/widgets/on_error_refresh_button.dart';
-import '/src/core/widgets/operation_headline.dart';
 
 class GoldTab extends StatefulWidget {
   const GoldTab({super.key});
@@ -40,51 +39,28 @@ class _GoldTabState extends State<GoldTab> {
                         context.read<GoldPricesCubit>().getGoldPrices);
               }
               final goldPrices = context.read<GoldPricesCubit>().goldPrices;
-              return Column(
-                children: [
-                  OperationHeadLine(
-                      operation: 'Gold Prices', date: goldPrices.date),
-                  gapH16,
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        GoldPricesListItem(
-                            currency: 'EGP',
-                            goldType: 24,
-                            price: goldPrices.gold24kPrice),
-                        GoldPricesListItem(
-                            currency: 'EGP',
-                            goldType: 22,
-                            price: goldPrices.gold22kPrice),
-                        GoldPricesListItem(
-                            currency: 'EGP',
-                            goldType: 21,
-                            price: goldPrices.gold21kPrice),
-                        GoldPricesListItem(
-                            currency: 'EGP',
-                            goldType: 20,
-                            price: goldPrices.gold20kPrice),
-                        GoldPricesListItem(
-                            currency: 'EGP',
-                            goldType: 18,
-                            price: goldPrices.gold18kPrice),
-                        GoldPricesListItem(
-                            currency: 'EGP',
-                            goldType: 16,
-                            price: goldPrices.gold16kPrice),
-                        GoldPricesListItem(
-                            currency: 'EGP',
-                            goldType: 14,
-                            price: goldPrices.gold14kPrice),
-                        GoldPricesListItem(
-                            currency: 'EGP',
-                            goldType: 10,
-                            hasDivider: false,
-                            price: goldPrices.gold10kPrice),
-                      ],
-                    ),
-                  ),
-                ],
+              final goldTapPricesListItems = [
+                GoldPricesListItem(
+                    goldType: 24, price: goldPrices.gold24kPrice),
+                GoldPricesListItem(
+                    goldType: 22, price: goldPrices.gold22kPrice),
+                GoldPricesListItem(
+                    goldType: 21, price: goldPrices.gold21kPrice),
+                GoldPricesListItem(
+                    goldType: 20, price: goldPrices.gold20kPrice),
+                GoldPricesListItem(
+                    goldType: 18, price: goldPrices.gold18kPrice),
+                GoldPricesListItem(
+                    goldType: 16, price: goldPrices.gold16kPrice),
+                GoldPricesListItem(
+                    goldType: 14, price: goldPrices.gold14kPrice),
+                GoldPricesListItem(
+                    goldType: 10, price: goldPrices.gold10kPrice),
+              ];
+              return ListView.separated(
+                separatorBuilder: (context, index) => const Divider(),
+                itemBuilder: (context, index) => goldTapPricesListItems[index],
+                itemCount: goldTapPricesListItems.length,
               );
             },
           )),

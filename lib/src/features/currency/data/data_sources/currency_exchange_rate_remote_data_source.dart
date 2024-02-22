@@ -3,7 +3,8 @@ import 'package:exchange_rates/src/core/constants/end_points.dart';
 import '/src/core/network/web_service.dart';
 
 abstract class CurrencyExchangeRateRemoteDataSource {
-  Future<Map<String, dynamic>> getCurrencyExchangeRateRawData();
+  Future<Map<String, dynamic>> getCurrencyExchangeRateRawData(
+      {required String baseCurrency, required String targetCurrency});
 }
 
 class CurrencyExchangeRateRemoteDataSourceImpl
@@ -13,7 +14,9 @@ class CurrencyExchangeRateRemoteDataSourceImpl
   final WebService webService;
 
   @override
-  Future<Map<String, dynamic>> getCurrencyExchangeRateRawData() async {
-    return await webService.getRequest(path: kEGPTOUSDExchangeRateEndpoint);
+  Future<Map<String, dynamic>> getCurrencyExchangeRateRawData(
+      {required String baseCurrency, required String targetCurrency}) async {
+    return await webService.getRequest(
+        path: '$kPairExchangeRateEndpoint/$baseCurrency/$targetCurrency');
   }
 }

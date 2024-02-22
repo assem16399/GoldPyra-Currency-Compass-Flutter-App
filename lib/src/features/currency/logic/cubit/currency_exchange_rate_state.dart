@@ -13,19 +13,19 @@ class CurrencyExchangeRateLoading extends CurrencyExchangeRateState {
 }
 
 class CurrencyExchangeRateLoaded extends CurrencyExchangeRateState {
-  CurrencyExchangeRateLoaded({required this.currencyExchangeRate});
-  final CurrencyExchangeRate currencyExchangeRate;
+  CurrencyExchangeRateLoaded({required this.currencyExchangeRates});
+  final CurrencyExchangeRates currencyExchangeRates;
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
     return other is CurrencyExchangeRateLoaded &&
-        other.currencyExchangeRate == currencyExchangeRate;
+        other.currencyExchangeRates == currencyExchangeRates;
   }
 
   @override
-  int get hashCode => currencyExchangeRate.hashCode;
+  int get hashCode => currencyExchangeRates.hashCode;
 }
 
 class CurrencyExchangeRateFailedToLoad extends CurrencyExchangeRateState {

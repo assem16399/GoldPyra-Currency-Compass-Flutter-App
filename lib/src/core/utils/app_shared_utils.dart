@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 import '../errors/exceptions.dart';
 import '../errors/failures.dart';
@@ -20,6 +23,18 @@ abstract class AppSharedUtils {
   }
 
   // Method to get a failure based on an exception.
-  static Failure getFailureBasedOnException(AppException exception) => exception
-      .failure; // Return the failure object associated with the exception.
+  static Failure _getFailureBasedOnException(AppException exception) =>
+      exception
+          .failure; // Return the failure object associated with the exception.
+
+  static Failure handleError(Object error) {
+    if (error is! AppException) return CustomFailure();
+    return _getFailureBasedOnException(error);
+  }
+
+  static String getCurrencySymbol({required String currencyCode}) {
+    final format = NumberFormat.simpleCurrency(
+        locale: Platform.localeName, name: currencyCode);
+    return format.currencySymbol;
+  }
 }
